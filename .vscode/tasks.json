@@ -1,0 +1,35 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build FLTK",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-g",
+                "main.cpp",
+                "-o",
+                "main.exe",
+                "-I", "C:/msys64/mingw64/include",
+                "-L", "C:/msys64/mingw64/lib",
+                "-lfltk",
+                "-lfltk_images", 
+                "-lfltk_forms",
+                "-lfltk_gl",
+                "-luser32",
+                "-lgdi32",
+                "-lopengl32"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        }
+    ]
+}
