@@ -1,5 +1,6 @@
 #include "PlanetsWindow.h"
 #include "MainWindow.h" 
+#include "Config.h"
 #include <windows.h>
 #include <mmsystem.h>
 
@@ -84,13 +85,15 @@ PlanetsWindow::PlanetsWindow(MainWindow* mainWin){
     window = new Fl_Window(1440, 820, "Планеты");
     window->position(10, 10);
 
+    Config& config = Config::getInstance();
+    
     // ЗАГРУЖАЕМ ИЗОБРАЖЕНИЯ ТОЛЬКО ПРИ ПЕРВОМ СОЗДАНИИ
     if (!static_bg) {
-        static_bg = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/Небо.png");
-        static_arrow = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/Cтрелка.png");
-        static_earth_small = new Fl_PNG_Image(Earth.getPathToSmallPNG().c_str());
-        static_moon_small = new Fl_PNG_Image(Moon.getPathToSmallPNG().c_str());
-        static_mars_small = new Fl_PNG_Image(Mars.getPathToSmallPNG().c_str());
+        static_bg = new Fl_PNG_Image(config.getPicturePath("Небо.png").c_str());
+        static_arrow = new Fl_PNG_Image(config.getPicturePath("Cтрелка.png").c_str());
+        static_earth_small = new Fl_PNG_Image(config.getPicturePath("ЗемляМини.png").c_str());
+        static_moon_small = new Fl_PNG_Image(config.getPicturePath("ЛунаМини.png").c_str());
+        static_mars_small = new Fl_PNG_Image(config.getPicturePath("МарсМини.png").c_str());
     }
 
     bg = static_bg;
@@ -113,23 +116,29 @@ PlanetsWindow::PlanetsWindow(MainWindow* mainWin){
 
     Button choose_earth(196, 123, 200, 50, 20, "Выбрать Землю");
     choose_earth.getButton()->callback(SetEarth, this);
+    choose_earth.getButton()->tooltip("Выбрать Землю в качестве текущей планеты");
     
     // Сохраняем кнопки выбора для управления
     choose_moon_btn = new Button(196, 219, 200, 50, 20, "Выбрать Луну");
     choose_moon_btn->getButton()->callback(SetMoon, this);
+    choose_moon_btn->getButton()->tooltip("Выбрать Луну в качестве текущей планеты\nТребуется: начало колонизации Луны");
 
     choose_mars_btn = new Button(196, 315, 200, 50, 20, "Выбрать Марс");
     choose_mars_btn->getButton()->callback(SetMars, this);
+    choose_mars_btn->getButton()->tooltip("Выбрать Марс в качестве текущей планеты\nТребуется: начало колонизации Марса");
 
     Button send_rocket_earth(423, 123, 350, 50, 20, "Отправить ракету на Землю");
     send_rocket_earth.deactivate();
+    send_rocket_earth.getButton()->tooltip("Земля уже полностью колонизирована");
 
     // Сохраняем кнопки отправки ракет для управления
     send_rocket_moon_btn = new Button(423, 219, 350, 50, 20, "Отправить ракету на Луну");
     send_rocket_moon_btn->getButton()->callback(Send_Rocket_Moon_cb, this);
+    send_rocket_moon_btn->getButton()->tooltip("Отправить ракету для колонизации Луны\nТребуется: ракета 1-го уровня или выше");
 
     send_rocket_mars_btn = new Button(423, 315, 350, 50, 20, "Отправить ракету на Марс");
     send_rocket_mars_btn->getButton()->callback(Send_Rocket_Mars_cb, this);
+    send_rocket_mars_btn->getButton()->tooltip("Отправить ракету для колонизации Марса\nТребуется: ракета 2-го уровня или выше");
 
     Text percent_of_colonization_Earth(800, 123, 250, 50, 20, "Процент колонизации:");
     Text percent_of_colonization_Moon(800, 219, 250, 50, 20, "Процент колонизации:");
@@ -192,14 +201,18 @@ void PlanetsWindow::updateButtonsState() {
     // Кнопки выбора планет
     if (Moon.getPercentColonization() != 0) {
         choose_moon_btn->activate();
+        choose_moon_btn->getButton()->tooltip("Выбрать Луну в качестве текущей планеты");
     } else {
         choose_moon_btn->deactivate();
+        choose_moon_btn->getButton()->tooltip("Выбрать Луну в качестве текущей планеты\nТребуется: начало колонизации Луны\nЛуна еще не колонизирована");
     }
 
     if (Mars.getPercentColonization() != 0) {
         choose_mars_btn->activate();
+        choose_mars_btn->getButton()->tooltip("Выбрать Марс в качестве текущей планеты");
     } else {
         choose_mars_btn->deactivate();
+        choose_mars_btn->getButton()->tooltip("Выбрать Марс в качестве текущей планеты\nТребуется: начало колонизации Марса\nМарс еще не колонизирован");
     }
 
     // Кнопки отправки ракет
@@ -207,16 +220,44 @@ void PlanetsWindow::updateButtonsState() {
         Player.getRocket()->getLevel() >= 1 && 
         Moon.getPercentColonization() != 100) {
         send_rocket_moon_btn->activate();
+        std::string moon_tooltip = "Отправить ракету для колонизации Луны\nТекущая ракета: уровень " + 
+                                  std::to_string(Player.getRocket()->getLevel()) + "\n" +
+                                  "Колонизация увеличится на: " + 
+                                  std::to_string(Player.getRocket()->getPower() / Moon.getProtection()) + "%";
+        send_rocket_moon_btn->getButton()->tooltip(moon_tooltip.c_str());
     } else {
         send_rocket_moon_btn->deactivate();
+        std::string moon_tooltip = "Отправить ракету для колонизации Луны\nТребуется: ракета 1-го уровня или выше\n";
+        if (Player.getRocket() == nullptr) {
+            moon_tooltip += "У вас нет ракеты";
+        } else if (Player.getRocket()->getLevel() < 1) {
+            moon_tooltip += "Ваша ракета слишком низкого уровня";
+        } else if (Moon.getPercentColonization() == 100) {
+            moon_tooltip += "Луна уже полностью колонизирована";
+        }
+        send_rocket_moon_btn->getButton()->tooltip(moon_tooltip.c_str());
     }
 
     if (Player.getRocket() != nullptr && 
         Player.getRocket()->getLevel() >= 2 && 
         Mars.getPercentColonization() != 100) {
         send_rocket_mars_btn->activate();
+        std::string mars_tooltip = "Отправить ракету для колонизации Марса\nТекущая ракета: уровень " + 
+                                  std::to_string(Player.getRocket()->getLevel()) + "\n" +
+                                  "Колонизация увеличится на: " + 
+                                  std::to_string(Player.getRocket()->getPower() / Mars.getProtection()) + "%";
+        send_rocket_mars_btn->getButton()->tooltip(mars_tooltip.c_str());
     } else {
         send_rocket_mars_btn->deactivate();
+        std::string mars_tooltip = "Отправить ракету для колонизации Марса\nТребуется: ракета 2-го уровня или выше\n";
+        if (Player.getRocket() == nullptr) {
+            mars_tooltip += "У вас нет ракеты";
+        } else if (Player.getRocket()->getLevel() < 2) {
+            mars_tooltip += "Ваша ракета слишком низкого уровня";
+        } else if (Mars.getPercentColonization() == 100) {
+            mars_tooltip += "Марс уже полностью колонизирован";
+        }
+        send_rocket_mars_btn->getButton()->tooltip(mars_tooltip.c_str());
     }
 }
 
@@ -234,4 +275,9 @@ void PlanetsWindow::refreshAll() {
 
     // Обновляем состояние кнопок
     updateButtonsState();
+    
+    // Перерисовываем окно
+    if (window->visible()) {
+        window->redraw();
+    }
 }

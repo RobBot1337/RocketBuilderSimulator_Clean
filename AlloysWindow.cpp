@@ -2,27 +2,25 @@
 #include "RecourcesMainWindow.h" 
 #include "Mines.h"
 #include "Alloys.h"
+#include "Config.h"
 #include <windows.h>
 #include <mmsystem.h>
 
 static Fl_PNG_Image* static_bg = nullptr;
 static Fl_PNG_Image* static_arrow = nullptr;
 
-// ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ДЛЯ ОТОБРАЖЕНИЯ РЕСУРСОВ
 Fl_Box* Steel_Count;
 Fl_Box* Duraluminium_Count;
 Fl_Box* Aluminium_Magnesium_Count;
 Fl_Box* Copper_Titanium_Count;
 Fl_Box* Titanium_Aluminium_Iron_Count;
 
-// Callback функции для сплавов
 void AlloysWindow::craft_steel_cb(Fl_Widget* w, void* data) {
     if (iron >= alloys.at("Steel").getRecipe().at("iron") && coal >= alloys.at("Steel").getRecipe().at("coal")) {
-        alloys.at("Steel").setCount(alloys.at("Steel").getCount() + 1);
+        alloys.at("Steel").setCount(alloys.at("Steel").getCount() + 10);  // +10 за крафт
         iron -= alloys.at("Steel").getRecipe().at("iron");
         coal -= alloys.at("Steel").getRecipe().at("coal");
         
-        // ОБНОВЛЯЕМ ИНТЕРФЕЙС ПОСЛЕ ИЗМЕНЕНИЯ
         AlloysWindow* win = (AlloysWindow*)data;
         win->refreshAll();
     }
@@ -32,11 +30,10 @@ void AlloysWindow::craft_duraluminium_cb(Fl_Widget* w, void* data) {
     if (aluminium >= alloys.at("Duraluminium").getRecipe().at("aluminium") && 
         copper >= alloys.at("Duraluminium").getRecipe().at("copper")){
         
-        alloys.at("Duraluminium").setCount(alloys.at("Duraluminium").getCount() + 1);
+        alloys.at("Duraluminium").setCount(alloys.at("Duraluminium").getCount() + 10);  // +10 за крафт
         aluminium -= alloys.at("Duraluminium").getRecipe().at("aluminium");
         copper -= alloys.at("Duraluminium").getRecipe().at("copper");
         
-        // ОБНОВЛЯЕМ ИНТЕРФЕЙС ПОСЛЕ ИЗМЕНЕНИЯ
         AlloysWindow* win = (AlloysWindow*)data;
         win->refreshAll();
     }
@@ -46,11 +43,10 @@ void AlloysWindow::craft_aluminium_magnesium_cb(Fl_Widget* w, void* data) {
     if (aluminium >= alloys.at("AluminiumMagnesium").getRecipe().at("aluminium") && 
         magnesium >= alloys.at("AluminiumMagnesium").getRecipe().at("magnesium")) {
         
-        alloys.at("AluminiumMagnesium").setCount(alloys.at("AluminiumMagnesium").getCount() + 1);
+        alloys.at("AluminiumMagnesium").setCount(alloys.at("AluminiumMagnesium").getCount() + 10);  // +10 за крафт
         aluminium -= alloys.at("AluminiumMagnesium").getRecipe().at("aluminium");
         magnesium -= alloys.at("AluminiumMagnesium").getRecipe().at("magnesium");
         
-        // ОБНОВЛЯЕМ ИНТЕРФЕЙС ПОСЛЕ ИЗМЕНЕНИЯ
         AlloysWindow* win = (AlloysWindow*)data;
         win->refreshAll();
     }
@@ -60,11 +56,10 @@ void AlloysWindow::craft_copper_titanium_cb(Fl_Widget* w, void* data) {
     if (copper >= alloys.at("CopperTitanium").getRecipe().at("copper") && 
         titanium >= alloys.at("CopperTitanium").getRecipe().at("titanium")) {
         
-        alloys.at("CopperTitanium").setCount(alloys.at("CopperTitanium").getCount() + 1);
+        alloys.at("CopperTitanium").setCount(alloys.at("CopperTitanium").getCount() + 10);  // +10 за крафт
         copper -= alloys.at("CopperTitanium").getRecipe().at("copper");
         titanium -= alloys.at("CopperTitanium").getRecipe().at("titanium");
         
-        // ОБНОВЛЯЕМ ИНТЕРФЕЙС ПОСЛЕ ИЗМЕНЕНИЯ
         AlloysWindow* win = (AlloysWindow*)data;
         win->refreshAll();
     }
@@ -75,12 +70,11 @@ void AlloysWindow::craft_titanium_aluminium_iron_cb(Fl_Widget* w, void* data) {
         aluminium >= alloys.at("TitaniumAluminiumIron").getRecipe().at("aluminium") &&
         iron >= alloys.at("TitaniumAluminiumIron").getRecipe().at("iron")) {
         
-        alloys.at("TitaniumAluminiumIron").setCount(alloys.at("TitaniumAluminiumIron").getCount() + 1);
+        alloys.at("TitaniumAluminiumIron").setCount(alloys.at("TitaniumAluminiumIron").getCount() + 10);  // +10 за крафт
         titanium -= alloys.at("TitaniumAluminiumIron").getRecipe().at("titanium");
         aluminium -= alloys.at("TitaniumAluminiumIron").getRecipe().at("aluminium");
         iron -= alloys.at("TitaniumAluminiumIron").getRecipe().at("iron");
         
-        // ОБНОВЛЯЕМ ИНТЕРФЕЙС ПОСЛЕ ИЗМЕНЕНИЯ
         AlloysWindow* win = (AlloysWindow*)data;
         win->refreshAll();
     }
@@ -92,24 +86,30 @@ AlloysWindow::AlloysWindow(RecourcesMainWindow* mainWin){
     window = new Fl_Window(1440, 820, "Сплавы");
     window->position(10, 10);
 
-    // ЗАГРУЖАЕМ ИЗОБРАЖЕНИЯ ТОЛЬКО ПРИ ПЕРВОМ СОЗДАНИИ
+    Config& config = Config::getInstance();
+    
     if (!static_bg) {
-        static_bg = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/Небо.png");
-        static_arrow = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/Cтрелка.png");
+        std::string bgPath = config.getPicturePath("Небо.png");
+        std::string arrowPath = config.getPicturePath("Cтрелка.png");
+        
+        static_bg = new Fl_PNG_Image(bgPath.c_str());
+        static_arrow = new Fl_PNG_Image(arrowPath.c_str());
     }
 
     bg = static_bg;
     background = new Fl_Box(0, 0, 1440, 820);
     background->image(bg);
 
-    // ИСПОЛЬЗУЕМ УЖЕ ЗАГРУЖЕННЫЕ ИЗОБРАЖЕНИЯ
     back_Button = new PictureButton(0, 0, 96, 96, static_arrow);
     back_Button->getButton()->callback(back_cb, this);
 
-    // СТАЛЬ
-    Picture steel_picture(100, 100, 96, 96, "C:/Users/Zenbook/Desktop/Graphproject/Pictures/Сталь.png");
+    // СТАЛЬ - верные рецепты из alloys.h
+    std::string steelPath = config.getPicturePath("Сталь.png");
+    Picture steel_picture(100, 100, 96, 96, steelPath.c_str());
+    
     craft_steel = new Button(196, 123, 300, 60, 20, "Создать сталь");
     craft_steel->getButton()->callback(craft_steel_cb, this);
+    craft_steel->getButton()->tooltip("Сталь: 10 железа + 5 угля");
 
     Text steel_count_Title(506, 123, 300, 60, 20, "Количество стали: ");
     Steel_Count = new Fl_Box(806, 123, 120, 60, "0");
@@ -119,9 +119,11 @@ AlloysWindow::AlloysWindow(RecourcesMainWindow* mainWin){
     Steel_Count->labelfont(FL_COURIER_BOLD);
 
     // ДЮРАЛЮМИНИЙ
-    Picture duraluminium_picture(100, 196, 96, 96, "C:/Users/Zenbook/Desktop/Graphproject/Pictures/Дюраллюминий.png");
+    std::string duralPath = config.getPicturePath("Дюраллюминий.png");
+    Picture duraluminium_picture(100, 196, 96, 96, duralPath.c_str());
     craft_duraluminium = new Button(196, 219, 300, 60, 20, "Создать дюралюминий");
     craft_duraluminium->getButton()->callback(craft_duraluminium_cb, this);
+    craft_duraluminium->getButton()->tooltip("Дюралюминий: 10 алюминия + 5 меди");
 
     Text duraluminium_count_Title(506, 219, 300, 60, 20, "Количество дюралюминия: ");
     Duraluminium_Count = new Fl_Box(806, 219, 120, 60, "0");
@@ -131,9 +133,11 @@ AlloysWindow::AlloysWindow(RecourcesMainWindow* mainWin){
     Duraluminium_Count->labelfont(FL_COURIER_BOLD);
 
     // АЛЮМИНИЙ+МАГНИЙ
-    Picture aluminium_magnesium_picture(100, 292, 96, 96, "C:/Users/Zenbook/Desktop/Graphproject/Pictures/АлюминийМагний.png");
+    std::string almgPath = config.getPicturePath("АлюминийМагний.png");
+    Picture aluminium_magnesium_picture(100, 292, 96, 96, almgPath.c_str());
     craft_aluminium_magnesium = new Button(196, 315, 300, 60, 20, "Создать Al+Mg сплав");
     craft_aluminium_magnesium->getButton()->callback(craft_aluminium_magnesium_cb, this);
+    craft_aluminium_magnesium->getButton()->tooltip("Al+Mg сплав: 8 алюминия + 4 магния");
 
     Text aluminium_magnesium_count_Title(506, 315, 300, 60, 20, "Количество Al+Mg: ");
     Aluminium_Magnesium_Count = new Fl_Box(806, 315, 120, 60, "0");
@@ -143,9 +147,11 @@ AlloysWindow::AlloysWindow(RecourcesMainWindow* mainWin){
     Aluminium_Magnesium_Count->labelfont(FL_COURIER_BOLD);
 
     // МЕДЬ+ТИТАН
-    Picture copper_titanium_picture(100, 388, 96, 96, "C:/Users/Zenbook/Desktop/Graphproject/Pictures/МедьТитан.png");
+    std::string cutiPath = config.getPicturePath("МедьТитан.png");
+    Picture copper_titanium_picture(100, 388, 96, 96, cutiPath.c_str());
     craft_copper_titanium = new Button(196, 411, 300, 60, 20, "Создать Cu+Ti сплав");
     craft_copper_titanium->getButton()->callback(craft_copper_titanium_cb, this);
+    craft_copper_titanium->getButton()->tooltip("Cu+Ti сплав: 6 меди + 3 титана");
 
     Text copper_titanium_count_Title(506, 411, 300, 60, 20, "Количество Cu+Ti: ");
     Copper_Titanium_Count = new Fl_Box(806, 411, 120, 60, "0");
@@ -155,9 +161,11 @@ AlloysWindow::AlloysWindow(RecourcesMainWindow* mainWin){
     Copper_Titanium_Count->labelfont(FL_COURIER_BOLD);
 
     // ТИТАН+АЛЮМИНИЙ+ЖЕЛЕЗО
-    Picture titanium_aluminium_iron_picture(100, 484, 96, 96, "C:/Users/Zenbook/Desktop/Graphproject/Pictures/ТитанАлюминийЖелезо.png");
+    std::string tiaifePath = config.getPicturePath("ТитанАлюминийЖелезо.png");
+    Picture titanium_aluminium_iron_picture(100, 484, 96, 96, tiaifePath.c_str());
     craft_titanium_aluminium_iron = new Button(196, 507, 300, 60, 20, "Создать Ti+Al+Fe сплав");
     craft_titanium_aluminium_iron->getButton()->callback(craft_titanium_aluminium_iron_cb, this);
+    craft_titanium_aluminium_iron->getButton()->tooltip("Ti+Al+Fe сплав: 4 титана + 6 алюминия + 5 железа");
 
     Text titanium_aluminium_iron_count_Title(506, 507, 300, 60, 20, "Количество Ti+Al+Fe: ");
     Titanium_Aluminium_Iron_Count = new Fl_Box(806, 507, 120, 60, "0");
@@ -166,7 +174,6 @@ AlloysWindow::AlloysWindow(RecourcesMainWindow* mainWin){
     Titanium_Aluminium_Iron_Count->align(FL_ALIGN_CENTER);
     Titanium_Aluminium_Iron_Count->labelfont(FL_COURIER_BOLD);
 
-    // Первоначальное обновление
     refreshAll();
 }
 
@@ -174,9 +181,7 @@ AlloysWindow::~AlloysWindow() {
     // ТАЙМЕР УБРАН - НИЧЕГО НЕ УДАЛЯЕМ
 }
 
-// МЕТОД ДЛЯ ОБНОВЛЕНИЯ ВСЕХ ДАННЫХ
 void AlloysWindow::refreshAll() {
-    // Обновляем количество всех сплавов
     std::string steelText = std::to_string(alloys.at("Steel").getCount());
     Steel_Count->copy_label(steelText.c_str());
 
@@ -192,10 +197,8 @@ void AlloysWindow::refreshAll() {
     std::string titaniumAluminiumIronText = std::to_string(alloys.at("TitaniumAluminiumIron").getCount());
     Titanium_Aluminium_Iron_Count->copy_label(titaniumAluminiumIronText.c_str());
     
-    // Обновляем состояние кнопок
     updateButtonsState();
     
-    // Перерисовываем окно ТОЛЬКО при реальных изменениях
     if (window->visible()) {
         window->redraw();
     }
@@ -206,9 +209,11 @@ void AlloysWindow::updateButtonsState() {
     if (iron >= alloys.at("Steel").getRecipe().at("iron") && coal >= alloys.at("Steel").getRecipe().at("coal")){
         craft_steel->activate();
         craft_steel->setColor(FL_GREEN);
+        craft_steel->getButton()->tooltip("Создать сталь");
     } else {
         craft_steel->deactivate();
         craft_steel->setColor(FL_RED);
+        craft_steel->getButton()->tooltip("Недостаточно ресурсов\nРецепт: 10 железа + 5 угля");
     }
 
     // Дюралюминий
@@ -216,9 +221,11 @@ void AlloysWindow::updateButtonsState() {
         copper >= alloys.at("Duraluminium").getRecipe().at("copper")) {
         craft_duraluminium->activate();
         craft_duraluminium->setColor(FL_GREEN);
+        craft_duraluminium->getButton()->tooltip("Создать дюралюминий");
     } else {
         craft_duraluminium->deactivate();
         craft_duraluminium->setColor(FL_RED);
+        craft_duraluminium->getButton()->tooltip("Недостаточно ресурсов\nРецепт: 10 алюминия + 5 меди");
     }
 
     // Алюминий+Магний
@@ -226,9 +233,11 @@ void AlloysWindow::updateButtonsState() {
         magnesium >= alloys.at("AluminiumMagnesium").getRecipe().at("magnesium")) {
         craft_aluminium_magnesium->activate();
         craft_aluminium_magnesium->setColor(FL_GREEN);
+        craft_aluminium_magnesium->getButton()->tooltip("Создать Al+Mg сплав");
     } else {
         craft_aluminium_magnesium->deactivate();
         craft_aluminium_magnesium->setColor(FL_RED);
+        craft_aluminium_magnesium->getButton()->tooltip("Недостаточно ресурсов\nРецепт: 8 алюминия + 4 магния");
     }
 
     // Медь+Титан
@@ -236,9 +245,11 @@ void AlloysWindow::updateButtonsState() {
         titanium >= alloys.at("CopperTitanium").getRecipe().at("titanium")) {
         craft_copper_titanium->activate();
         craft_copper_titanium->setColor(FL_GREEN);
+        craft_copper_titanium->getButton()->tooltip("Создать Cu+Ti сплав");
     } else {
         craft_copper_titanium->deactivate();
         craft_copper_titanium->setColor(FL_RED);
+        craft_copper_titanium->getButton()->tooltip("Недостаточно ресурсов\nРецепт: 6 меди + 3 титана");
     }
 
     // Титан+Алюминий+Железо
@@ -247,25 +258,20 @@ void AlloysWindow::updateButtonsState() {
         iron >= alloys.at("TitaniumAluminiumIron").getRecipe().at("iron")) {
         craft_titanium_aluminium_iron->activate();
         craft_titanium_aluminium_iron->setColor(FL_GREEN);
+        craft_titanium_aluminium_iron->getButton()->tooltip("Создать Ti+Al+Fe сплав");
     } else {
         craft_titanium_aluminium_iron->deactivate();
         craft_titanium_aluminium_iron->setColor(FL_RED);
+        craft_titanium_aluminium_iron->getButton()->tooltip("Недостаточно ресурсов\nРецепт: 4 титана + 6 алюминия + 5 железа");
     }
 }
 
-// ФУНКЦИЯ ДЛЯ ТАЙМЕРА - УБИРАЕМ ВОВСЕ
-// void AlloysWindow::updateData(void* data) {
-//     // ЭТУ ФУНКЦИЮ УДАЛЯЕМ
-// }
-
 void AlloysWindow::show() {
     window->show();
-    // НЕ ЗАПУСКАЕМ ТАЙМЕР - обновляем только при действиях пользователя
-    refreshAll(); // однократное обновление при показе
+    refreshAll();
 }
 
 void AlloysWindow::hide() {
-    // НЕ ОСТАНАВЛИВАЕМ ТАЙМЕР - его нет
     window->hide();
 }
 

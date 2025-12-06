@@ -5,43 +5,44 @@
 #include <FL/Fl.H>
 #include <string>
 
-class Parts_of_Rocket{
+class PartsOfRocket {
 private:
     int count;
-    int price_to_research;
+    int priceToResearch;
     bool isUnlocked;
     std::map<std::string, int> recipe;
     
 public:
-    Parts_of_Rocket(); 
-    Parts_of_Rocket(const std::map<std::string, int>& recipe, int price_to_research, bool isUnlocked, int count);
+    PartsOfRocket(); 
+    PartsOfRocket(const std::map<std::string, int>& recipe, int priceToResearch, bool isUnlocked, int count);
     
     // Сеттер
-    void changeUnlocked(bool Unlocked) { isUnlocked = Unlocked; }
-    void setCount(int new_count) { count = new_count; }
+    void changeUnlocked(bool unlocked) { isUnlocked = unlocked; }
+    void setCount(int newCount) { count = newCount; }
     
     // Геттеры
     const std::map<std::string, int>& getRecipe() const { return recipe; }
-    bool getIsUnlocked() const { return isUnlocked; }  // Изменили имя метода
-    int getPrice() const { return price_to_research; }
+    bool getIsUnlocked() const { return isUnlocked; }
+    int getPrice() const { return priceToResearch; }
     int getCount() const { return count; }
 };
-class Rocket{
+
+class Rocket {
 private:
     int power;
-    int level_of_rocket;
+    int level;
+    
 public:
     Rocket();
-    Rocket(int level_of_rocket, int power);
+    Rocket(int level, int power);
 
-    int getLevel() const { return level_of_rocket; }
+    int getLevel() const { return level; }
     int getPower() const { return power; }
 };
+
 // Глобальные переменные сплавов
-extern std::map<std::string, Parts_of_Rocket> Rockets_parts;
+extern std::map<std::string, PartsOfRocket> Rockets_parts;
 extern Rocket Rocket1;
 extern Rocket Rocket2;
-
-
 
 #endif

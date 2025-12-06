@@ -1,6 +1,7 @@
 #include "RecourcesWindow.h"
 #include "RecourcesMainWindow.h" 
 #include "Mines.h"
+#include "Config.h"
 #include <windows.h>
 #include <mmsystem.h>
 
@@ -19,10 +20,12 @@ RecourcesWindow::RecourcesWindow(RecourcesMainWindow* mainWin){
     window = new Fl_Window(1440, 820, "Ресурсы");
     window->position(10, 10);
 
+    Config& config = Config::getInstance();
+    
     // ЗАГРУЖАЕМ ИЗОБРАЖЕНИЯ ТОЛЬКО ПРИ ПЕРВОМ СОЗДАНИИ
     if (!static_bg) {
-        static_bg = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/Небо.png");
-        static_arrow = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/Cтрелка.png");
+        static_bg = new Fl_PNG_Image(config.getPicturePath("Небо.png").c_str());
+        static_arrow = new Fl_PNG_Image(config.getPicturePath("Cтрелка.png").c_str());
     }
 
     bg = static_bg;
@@ -34,7 +37,8 @@ RecourcesWindow::RecourcesWindow(RecourcesMainWindow* mainWin){
     back_Button->getButton()->callback(back_cb, this);
 
     // ЖЕЛЕЗО
-    Picture iron_picture(100, 100, 96, 96, "C:/Users/Zenbook/Desktop/Graphproject/Pictures/Железо.png");
+    std::string ironPath = config.getPicturePath("Железо.png");
+    Picture iron_picture(100, 100, 96, 96, ironPath.c_str());
     Text iron_count_Title(196, 123, 250, 50, 20, "Количество железа");
     Iron_Count = new Fl_Box(448, 123, 100, 50, "0");
     Iron_Count->labelsize(20);
@@ -43,7 +47,8 @@ RecourcesWindow::RecourcesWindow(RecourcesMainWindow* mainWin){
     Iron_Count->labelfont(FL_COURIER_BOLD);
 
     // УГОЛЬ
-    Picture coal_picture(100, 196, 96, 96, "C:/Users/Zenbook/Desktop/Graphproject/Pictures/Уголь.png");
+    std::string coalPath = config.getPicturePath("Уголь.png");
+    Picture coal_picture(100, 196, 96, 96, coalPath.c_str());
     Text coal_count_Title(196, 219, 250, 50, 20, "Количество угля");
     Coal_Count = new Fl_Box(448, 219, 100, 50, "0");
     Coal_Count->labelsize(20);
@@ -52,7 +57,8 @@ RecourcesWindow::RecourcesWindow(RecourcesMainWindow* mainWin){
     Coal_Count->labelfont(FL_COURIER_BOLD);
 
     // МЕДЬ
-    Picture copper_picture(100, 292, 96, 96, "C:/Users/Zenbook/Desktop/Graphproject/Pictures/Медь.png");
+    std::string copperPath = config.getPicturePath("Медь.png");
+    Picture copper_picture(100, 292, 96, 96, copperPath.c_str());
     Text copper_count_Title(196, 315, 250, 50, 20, "Количество меди");
     Copper_Count = new Fl_Box(448, 315, 100, 50, "0");
     Copper_Count->labelsize(20);
@@ -61,7 +67,8 @@ RecourcesWindow::RecourcesWindow(RecourcesMainWindow* mainWin){
     Copper_Count->labelfont(FL_COURIER_BOLD);
 
     // АЛЮМИНИЙ
-    Picture aluminium_picture(100, 388, 96, 96, "C:/Users/Zenbook/Desktop/Graphproject/Pictures/Алюминий.png");
+    std::string aluminiumPath = config.getPicturePath("Алюминий.png");
+    Picture aluminium_picture(100, 388, 96, 96, aluminiumPath.c_str());
     Text aluminium_count_Title(196, 411, 250, 50, 20, "Количество алюминия");
     Aluminium_Count = new Fl_Box(448, 411, 100, 50, "0");
     Aluminium_Count->labelsize(20);
@@ -70,7 +77,8 @@ RecourcesWindow::RecourcesWindow(RecourcesMainWindow* mainWin){
     Aluminium_Count->labelfont(FL_COURIER_BOLD);
 
     // ТИТАН
-    Picture titanium_picture(100, 484, 96, 96, "C:/Users/Zenbook/Desktop/Graphproject/Pictures/Титан.png");
+    std::string titaniumPath = config.getPicturePath("Титан.png");
+    Picture titanium_picture(100, 484, 96, 96, titaniumPath.c_str());
     Text titanium_count_Title(196, 507, 250, 50, 20, "Количество титана");
     Titanium_Count = new Fl_Box(448, 507, 100, 50, "0");
     Titanium_Count->labelsize(20);
@@ -79,7 +87,8 @@ RecourcesWindow::RecourcesWindow(RecourcesMainWindow* mainWin){
     Titanium_Count->labelfont(FL_COURIER_BOLD);
 
     // МАГНИЙ
-    Picture magnesium_picture(100, 580, 96, 96, "C:/Users/Zenbook/Desktop/Graphproject/Pictures/Магний.png");
+    std::string magnesiumPath = config.getPicturePath("Магний.png");
+    Picture magnesium_picture(100, 580, 96, 96, magnesiumPath.c_str());
     Text magnesium_count_Title(196, 603, 250, 50, 20, "Количество магния");
     Magnesium_Count = new Fl_Box(448, 603, 100, 50, "0");
     Magnesium_Count->labelsize(20);
@@ -88,7 +97,8 @@ RecourcesWindow::RecourcesWindow(RecourcesMainWindow* mainWin){
     Magnesium_Count->labelfont(FL_COURIER_BOLD);
 
     // НЕФТЬ
-    Picture oil_picture(100, 676, 96, 96, "C:/Users/Zenbook/Desktop/Graphproject/Pictures/Нефть.png");
+    std::string oilPath = config.getPicturePath("Нефть.png");
+    Picture oil_picture(100, 676, 96, 96, oilPath.c_str());
     Text oil_count_Title(196, 699, 250, 50, 20, "Количество нефти");
     Oil_Count = new Fl_Box(448, 699, 100, 50, "0");
     Oil_Count->labelsize(20);
@@ -97,7 +107,8 @@ RecourcesWindow::RecourcesWindow(RecourcesMainWindow* mainWin){
     Oil_Count->labelfont(FL_COURIER_BOLD);
 
     // НИКЕЛЬ
-    Picture nickel_picture(600, 100, 96, 96, "C:/Users/Zenbook/Desktop/Graphproject/Pictures/Никель.png");
+    std::string nickelPath = config.getPicturePath("Никель.png");
+    Picture nickel_picture(600, 100, 96, 96, nickelPath.c_str());
     Text nickel_count_Title(696, 123, 250, 50, 20, "Количество никеля");
     Nickel_Count = new Fl_Box(948, 123, 100, 50, "0");
     Nickel_Count->labelsize(20);
@@ -106,7 +117,8 @@ RecourcesWindow::RecourcesWindow(RecourcesMainWindow* mainWin){
     Nickel_Count->labelfont(FL_COURIER_BOLD);
 
     // КОБАЛЬТ
-    Picture cobalt_picture(600, 196, 96, 96, "C:/Users/Zenbook/Desktop/Graphproject/Pictures/Кобальт.png");
+    std::string cobaltPath = config.getPicturePath("Кобальт.png");
+    Picture cobalt_picture(600, 196, 96, 96, cobaltPath.c_str());
     Text cobalt_count_Title(696, 219, 250, 50, 20, "Количество кобальта");
     Cobalt_Count = new Fl_Box(948, 219, 100, 50, "0");
     Cobalt_Count->labelsize(20);
@@ -180,7 +192,6 @@ void RecourcesWindow::show() {
 void RecourcesWindow::hide() {
     window->hide();
 }
-
 
 void RecourcesWindow::back_cb(Fl_Widget* w, void* data) {
     RecourcesWindow* resWin = (RecourcesWindow*)data;

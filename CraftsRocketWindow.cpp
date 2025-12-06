@@ -2,6 +2,7 @@
 #include "CraftsWindow.h"
 #include "Mines.h"
 #include "PartsOfRocket.h"
+#include "Config.h"  // Добавляем Config
 #include <windows.h>
 #include <mmsystem.h>
 
@@ -61,10 +62,15 @@ CraftsRocketWindow::CraftsRocketWindow(CraftsWindow* mainWin){
     window = new Fl_Window(1440, 820, "Сборка ракет");
     window->position(10, 10);
 
-    // ЗАГРУЖАЕМ ИЗОБРАЖЕНИЯ ТОЛЬКО ПРИ ПЕРВОМ СОЗДАНИИ
+    Config& config = Config::getInstance();
+    
+    // ЗАГРУЖАЕМ ИЗОБРАЖЕНИЯ С ИСПОЛЬЗОВАНИЕМ КОНФИГА
     if (!static_bg) {
-        static_bg = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/Небо.png");
-        static_arrow = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/Cтрелка.png");
+        std::string bgPath = config.getPicturePath("Небо.png");
+        std::string arrowPath = config.getPicturePath("Cтрелка.png");
+        
+        static_bg = new Fl_PNG_Image(bgPath.c_str());
+        static_arrow = new Fl_PNG_Image(arrowPath.c_str());
     }
 
     bg = static_bg;
@@ -75,14 +81,21 @@ CraftsRocketWindow::CraftsRocketWindow(CraftsWindow* mainWin){
     back_Button = new PictureButton(0, 0, 96, 96, static_arrow);
     back_Button->getButton()->callback(back_cb, this);
 
-    Picture rocket1(100, 100, 96, 96, "C:/Users/Zenbook/Desktop/Graphproject/Pictures/Ракета1.png");
+    // Ракета 1
+    std::string rocket1Path = config.getPicturePath("Ракета1.png");
+    Picture rocket1(100, 100, 96, 96, rocket1Path.c_str());
+    
     craft_rocket1 = new Button(196, 123, 450, 50, 20, "Собрать ракету 1-го уровня");
     craft_rocket1->getButton()->callback(craft_rocket1_cb, this);
+    craft_rocket1->getButton()->tooltip("Требуется:\n- Двигатель 1: 1 шт\n- Корпус 1: 1 шт\n- Топливный бак 1: 1 шт");
 
-
-    Picture rocket2(100, 196, 96, 96, "C:/Users/Zenbook/Desktop/Graphproject/Pictures/Ракета2.png");
+    // Ракета 2
+    std::string rocket2Path = config.getPicturePath("Ракета2.png");
+    Picture rocket2(100, 196, 96, 96, rocket2Path.c_str());
+    
     craft_rocket2 = new Button(196, 219, 450, 50, 20, "Собрать ракету 2-го уровня");
     craft_rocket2->getButton()->callback(craft_rocket2_cb, this);
+    craft_rocket2->getButton()->tooltip("Требуется:\n- Двигатель 2: 1 шт\n- Корпус 2: 1 шт\n- Топливный бак 2: 1 шт");
 
     updateButtonsState();
 }
@@ -119,9 +132,25 @@ void CraftsRocketWindow::updateButtonsState(){
         Moon.getPercentColonization()!=100){
         craft_rocket1->activate();
         craft_rocket1->setColor(FL_GREEN);
+        craft_rocket1->getButton()->tooltip("Требуется:\n- Двигатель 1: 1 шт\n- Корпус 1: 1 шт\n- Топливный бак 1: 1 шт\n\n✅ Все детали есть!");
     } else {
         craft_rocket1->deactivate();
         craft_rocket1->setColor(FL_RED);
+        
+        // Более детальный tooltip при недостатке
+        std::string tooltip1 = "Требуется:\n";
+        tooltip1 += "- Двигатель 1: 1 шт (есть: " + std::to_string(Rockets_parts.at("Engine1").getCount()) + ")\n";
+        tooltip1 += "- Корпус 1: 1 шт (есть: " + std::to_string(Rockets_parts.at("Hull1").getCount()) + ")\n";
+        tooltip1 += "- Топливный бак 1: 1 шт (есть: " + std::to_string(Rockets_parts.at("FuelTank1").getCount()) + ")\n";
+        
+        if (Player.getRocket() != nullptr) {
+            tooltip1 += "\n❌ У игрока уже есть ракета";
+        }
+        if (Moon.getPercentColonization() == 100) {
+            tooltip1 += "\n❌ Луна уже колонизирована";
+        }
+        
+        craft_rocket1->getButton()->tooltip(tooltip1.c_str());
     }
 
     // Проверяем достаточно ли деталей для ракеты 2 уровня
@@ -131,9 +160,22 @@ void CraftsRocketWindow::updateButtonsState(){
         Player.getRocket()==nullptr) {
         craft_rocket2->activate();
         craft_rocket2->setColor(FL_GREEN);
+        craft_rocket2->getButton()->tooltip("Требуется:\n- Двигатель 2: 1 шт\n- Корпус 2: 1 шт\n- Топливный бак 2: 1 шт\n\n✅ Все детали есть!");
     } else {
         craft_rocket2->deactivate();
         craft_rocket2->setColor(FL_RED);
+        
+        // Более детальный tooltip при недостатке
+        std::string tooltip2 = "Требуется:\n";
+        tooltip2 += "- Двигатель 2: 1 шт (есть: " + std::to_string(Rockets_parts.at("Engine2").getCount()) + ")\n";
+        tooltip2 += "- Корпус 2: 1 шт (есть: " + std::to_string(Rockets_parts.at("Hull2").getCount()) + ")\n";
+        tooltip2 += "- Топливный бак 2: 1 шт (есть: " + std::to_string(Rockets_parts.at("FuelTank2").getCount()) + ")\n";
+        
+        if (Player.getRocket() != nullptr) {
+            tooltip2 += "\n❌ У игрока уже есть ракета";
+        }
+        
+        craft_rocket2->getButton()->tooltip(tooltip2.c_str());
     }
 }
 

@@ -4,27 +4,36 @@
 #include <string>
 
 // Создаем класс планет
-class Planet{
-    private:
-        std::string name;
-        std::string PathBigPlanetPNG;
-        std::string PathSmallPlanetPNG;
-        int percent_of_colonization;
-        int protection;
-        int max_profit;
-    public:
-        Planet(const std::string& planetName, const std::string& Path_to_Big, const std::string& Path_to_Small, int per_of_colon, const int protect, const int profit);
-        int getProfit() const { return max_profit; }
-        int getProtection() const {return protection;}
-        short int getPercentColonization() const { return percent_of_colonization; }
-        std::string getPathToSmallPNG() const { return PathSmallPlanetPNG; }
-        std::string getPathToBigPNG() const { return PathBigPlanetPNG; }
-        std::string getName() const { return name; }
-        void setPercentColonization(int new_percent_of_colonization) {percent_of_colonization = new_percent_of_colonization; }
-
+class Planet {
+private:
+    std::string name;
+    std::string pathBigPNG;
+    std::string pathSmallPNG;
+    short unsigned int percentColonization;
+    short unsigned int protection;
+    short unsigned int maxProfit;
+    
+public:
+    Planet(const std::string& planetName, 
+           const std::string& pathToBig, 
+           const std::string& pathToSmall, 
+           short unsigned int percentColon, 
+           short unsigned int protect, 
+           short unsigned int profit);
+    
+    double getProfit() const { return maxProfit * percentColonization / 100; }
+    int getProtection() const { return protection; }
+    int getPercentColonization() const { return percentColonization; }
+    std::string getPathToSmallPNG() const { return pathSmallPNG; }
+    std::string getPathToBigPNG() const { return pathBigPNG; }
+    std::string getName() const { return name; }
+    
+    void setPercentColonization(int newPercentColonization) { 
+        percentColonization = newPercentColonization; 
+    }
 };
 
-// Объявляем глобальные перменные
+// Объявляем глобальные переменные
 extern Planet Earth;
 extern Planet Moon; 
 extern Planet Mars;

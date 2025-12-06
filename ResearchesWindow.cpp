@@ -3,6 +3,7 @@
 #include "HullsWindow.h"
 #include "FuelTanksWindow.h"
 #include "EnginesWindow.h"
+#include "Config.h"
 #include <windows.h>
 #include <mmsystem.h>
 
@@ -38,12 +39,14 @@ ResearchesWindow::ResearchesWindow(MainWindow* mainWin) :
     window = new Fl_Window(1440, 820, "Исследования");
     window->position(10, 10);
 
+    Config& config = Config::getInstance();
+    
     // Загружаем изображения как члены класса
-    bg = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/Небо.png");
-    arrow = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/Cтрелка.png");
-    research_engine_icon = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/Двигатель1.png");
-    research_hull_icon = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/Корпус1.png");
-    research_tank_icon = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/Топливный1.png");
+    bg = new Fl_PNG_Image(config.getPicturePath("Небо.png").c_str());
+    arrow = new Fl_PNG_Image(config.getPicturePath("Cтрелка.png").c_str());
+    research_engine_icon = new Fl_PNG_Image(config.getPicturePath("Двигатель1.png").c_str());
+    research_hull_icon = new Fl_PNG_Image(config.getPicturePath("Корпус1.png").c_str());
+    research_tank_icon = new Fl_PNG_Image(config.getPicturePath("Топливный1.png").c_str());
 
     background = new Fl_Box(0, 0, 1440, 820);
     background->image(bg);
@@ -55,21 +58,32 @@ ResearchesWindow::ResearchesWindow(MainWindow* mainWin) :
     Text hulls_title(150, 300, 350, 60, 20, "Исследовать корпуса");
     research_hulls_Button = new PictureButton(275, 380, 96, 96, research_hull_icon);
     research_hulls_Button->getButton()->callback(research_hulls_cb, this);
+    research_hulls_Button->getButton()->tooltip("Исследовать различные корпуса для ракет");
 
     Text fuel_tanks_title(550, 300, 350, 60, 20, "Исследовать топливные баки");
     research_fuel_tanks_Button = new PictureButton(675, 380, 96, 96, research_tank_icon);
     research_fuel_tanks_Button->getButton()->callback(research_fuel_tanks_cb, this);
+    research_fuel_tanks_Button->getButton()->tooltip("Исследовать различные топливные баки для ракет");
 
     Text engines_title(950, 300, 350, 60, 20, "Исследовать двигатели");
     research_engines_Button = new PictureButton(1075, 380, 96, 96, research_engine_icon);
     research_engines_Button->getButton()->callback(research_engines_cb, this);
+    research_engines_Button->getButton()->tooltip("Исследовать различные двигатели для ракет");
 }
 
 ResearchesWindow::~ResearchesWindow() {
     // Очищаем ресурсы
     delete window;
-    // Не удаляем изображения, так как они могут использоваться другими объектами
-    // В реальном проекте нужно использовать умные указатели или систему управления ресурсами
+    delete bg;
+    delete arrow;
+    delete research_engine_icon;
+    delete research_hull_icon;
+    delete research_tank_icon;
+    delete back_Button;
+    delete research_hulls_Button;
+    delete research_fuel_tanks_Button;
+    delete research_engines_Button;
+    delete background;
 }
 
 void ResearchesWindow::show() {

@@ -6,6 +6,7 @@
 #include "RecourcesMainWindow.h"
 #include "ResearchesWindow.h"
 #include "CraftsWindow.h"
+#include "Config.h"
 #include <windows.h>
 #include <mmsystem.h>
 
@@ -74,13 +75,15 @@ MainWindow::MainWindow() {
     window = new Fl_Window(1440, 820, "Главное меню");
     window->position(10, 10);
 
+    Config& config = Config::getInstance();
+    
     // ЗАГРУЖАЕМ ИЗОБРАЖЕНИЯ ТОЛЬКО ПРИ ПЕРВОМ СОЗДАНИИ
     if (!static_bg) {
-        static_bg = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/Небо.png");
-        static_bur_img = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/Бур.png");
-        static_rudy_img = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/Руды.png");
-        static_lupa_img = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/Лупа.png");
-        static_raketa_img = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/Ракета2.png");
+        static_bg = new Fl_PNG_Image(config.getPicturePath("Небо.png").c_str());
+        static_bur_img = new Fl_PNG_Image(config.getPicturePath("Бур.png").c_str());
+        static_rudy_img = new Fl_PNG_Image(config.getPicturePath("Руды.png").c_str());
+        static_lupa_img = new Fl_PNG_Image(config.getPicturePath("Лупа.png").c_str());
+        static_raketa_img = new Fl_PNG_Image(config.getPicturePath("Ракета2.png").c_str());
     }
 
     bg = static_bg;

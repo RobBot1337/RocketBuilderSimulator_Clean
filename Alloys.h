@@ -5,9 +5,9 @@
 #include <FL/Fl.H>
 #include <string>
 
-class Alloy{
+class Alloy {
 private:
-    int count_of_alloy;
+    int count;
     std::map<std::string, int> recipe; // ресурс -> количество
     
 public:
@@ -15,17 +15,14 @@ public:
     Alloy(const std::map<std::string, int>& recipe);
     
     // Сеттер
-    void setCount(int new_count) { count_of_alloy = new_count; }
+    void setCount(int newCount) { count = newCount; }
     
     // Геттеры
-    int getCount() const { return count_of_alloy; }
+    int getCount() const { return count; }
     const std::map<std::string, int>& getRecipe() const { return recipe; }
-
 };
 
 // Глобальные переменные сплавов
 extern std::map<std::string, Alloy> alloys;
-
-
 
 #endif

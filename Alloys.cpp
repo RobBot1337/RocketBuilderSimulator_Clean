@@ -13,10 +13,10 @@ std::map<std::string, Alloy> alloys = {
 
 // Конструктор по умолчанию
 Alloy::Alloy() 
-    : count_of_alloy(0), recipe() {
+    : count(0), recipe() {
 }
 
 // Конструктор с рецептом
 Alloy::Alloy(const std::map<std::string, int>& recipe) 
-    : count_of_alloy(0), recipe(recipe) {
+    : count(0), recipe(recipe) {
 }

@@ -2,15 +2,14 @@
 #include "RecourcesWindow.h"
 #include "AlloysWindow.h"
 #include "MainWindow.h" 
+#include "Config.h"
 #include <windows.h>
 #include <mmsystem.h>
-
 
 static Fl_PNG_Image* static_bg = nullptr;
 static Fl_PNG_Image* static_arrow = nullptr;
 static Fl_PNG_Image* static_simple_recources = nullptr;
 static Fl_PNG_Image* static_alloys = nullptr;
-
 
 void RecourcesMainWindow::open_recources_cb(Fl_Widget* w, void* data) {
     RecourcesMainWindow* resMainWin = (RecourcesMainWindow*)data;
@@ -24,17 +23,18 @@ void RecourcesMainWindow::open_alloys_cb(Fl_Widget* w, void* data) {
 RecourcesMainWindow::RecourcesMainWindow(MainWindow* mainWin){
     mainWindow = mainWin;
 
-    window = new Fl_Window(1440, 820, "Планеты");
+    window = new Fl_Window(1440, 820, "Ресурсы");
     window->position(10, 10);
 
+    Config& config = Config::getInstance();
+    
     // ЗАГРУЖАЕМ ИЗОБРАЖЕНИЯ ТОЛЬКО ПРИ ПЕРВОМ СОЗДАНИИ
     if (!static_bg) {
-        static_bg = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/Небо.png");
-        static_arrow = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/Cтрелка.png");
-        static_simple_recources = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/Руды.png");
-        static_alloys = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/Сталь.png");
+        static_bg = new Fl_PNG_Image(config.getPicturePath("Небо.png").c_str());
+        static_arrow = new Fl_PNG_Image(config.getPicturePath("Cтрелка.png").c_str());
+        static_simple_recources = new Fl_PNG_Image(config.getPicturePath("Руды.png").c_str());
+        static_alloys = new Fl_PNG_Image(config.getPicturePath("Сталь.png").c_str());
     }
-
 
     bg = static_bg;
     background = new Fl_Box(0, 0, 1440, 820);
@@ -44,18 +44,17 @@ RecourcesMainWindow::RecourcesMainWindow(MainWindow* mainWin){
     back_Button = new PictureButton(0, 0, 96, 96, static_arrow);
     back_Button->getButton()->callback(back_cb, this);
 
-
     Text simple_resources_title(400, 300, 300, 60, 28, "Ресурсы");
     Text alloys_title(740, 300, 300, 60, 28, "Сплавы"); 
 
     simple_recources_Button = new PictureButton(502, 380, 96, 96, static_simple_recources);
     simple_recources_Button->getButton()->callback(open_recources_cb, this);
+    simple_recources_Button->getButton()->tooltip("Просмотреть базовые ресурсы");
 
     alloys_Button = new PictureButton(842, 380, 96, 96, static_alloys);
     alloys_Button->getButton()->callback(open_alloys_cb, this);
+    alloys_Button->getButton()->tooltip("Просмотреть сплавы и созданные материалы");
 }
-
-
 
 void RecourcesMainWindow::show() {
     window->show();

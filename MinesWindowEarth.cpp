@@ -1,5 +1,6 @@
 #include "MinesWindowEarth.h"
 #include "MainWindow.h" 
+#include "Config.h"
 #include <windows.h>
 #include <mmsystem.h>
 
@@ -113,20 +114,22 @@ MinesWindowEarth::MinesWindowEarth(MainWindow* mainWin) {
     buy_magnesium_mine = nullptr;
     buy_oil_pumping = nullptr;
 
-    window = new Fl_Window(1440, 820, "Планеты");
+    window = new Fl_Window(1440, 820, "Шахты Земли");
     window->position(10, 10);
 
+    Config& config = Config::getInstance();
+    
     // ЗАГРУЖАЕМ ИЗОБРАЖЕНИЯ ТОЛЬКО ПРИ ПЕРВОМ СОЗДАНИИ
     if (!static_bg) {
-        static_bg = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/ЗемнойФон.png");
-        static_arrow = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/Cтрелка.png");
-        static_coal_mine = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/УгольнаяШахта.png");
-        static_iron_mine = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/ЖелезнаяШахта.png");
-        static_cooper_mine = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/МеднаяШахта.png");
-        static_titan_mine = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/ТитановаяШахта.png");
-        static_magnesium_mine = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/МагниеваяШахта.png");
-        static_aluminium_mine = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/АлюминиеваяШахта.png");
-        static_oil_pumping = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/НефтянаяВышка.png");
+        static_bg = new Fl_PNG_Image(config.getPicturePath("ЗемнойФон.png").c_str());
+        static_arrow = new Fl_PNG_Image(config.getPicturePath("Cтрелка.png").c_str());
+        static_coal_mine = new Fl_PNG_Image(config.getPicturePath("УгольнаяШахта.png").c_str());
+        static_iron_mine = new Fl_PNG_Image(config.getPicturePath("ЖелезнаяШахта.png").c_str());
+        static_cooper_mine = new Fl_PNG_Image(config.getPicturePath("МеднаяШахта.png").c_str());
+        static_titan_mine = new Fl_PNG_Image(config.getPicturePath("ТитановаяШахта.png").c_str());
+        static_magnesium_mine = new Fl_PNG_Image(config.getPicturePath("МагниеваяШахта.png").c_str());
+        static_aluminium_mine = new Fl_PNG_Image(config.getPicturePath("АлюминиеваяШахта.png").c_str());
+        static_oil_pumping = new Fl_PNG_Image(config.getPicturePath("НефтянаяВышка.png").c_str());
     }
     bg = static_bg;
     background = new Fl_Box(0, 0, 1440, 820);
@@ -160,24 +163,31 @@ MinesWindowEarth::MinesWindowEarth(MainWindow* mainWin) {
     // СОЗДАЕМ КНОПКИ КАК ЧЛЕНЫ КЛАССА
     buy_coal_mine = new Button(196, 123, 200, 50, 20, "Купить шахту");
     buy_coal_mine->getButton()->callback(buy_coal_cb, this);
+    buy_coal_mine->getButton()->tooltip("Цена: 25 M");
 
     buy_iron_mine = new Button(196, 219, 200, 50, 20, "Купить шахту");
     buy_iron_mine->getButton()->callback(buy_iron_cb, this);
+    buy_iron_mine->getButton()->tooltip("Цена: 30 M");
 
     buy_cooper_mine = new Button(196, 315, 200, 50, 20, "Купить шахту");
     buy_cooper_mine->getButton()->callback(buy_cooper_cb, this);
+    buy_cooper_mine->getButton()->tooltip("Цена: 50 M");
 
     buy_titan_mine = new Button(196, 411, 200, 50, 20, "Купить шахту");
     buy_titan_mine->getButton()->callback(buy_titan_cb, this);
+    buy_titan_mine->getButton()->tooltip("Цена: 100 M");
 
     buy_aluminium_mine = new Button(196, 507, 200, 50, 20, "Купить шахту");
     buy_aluminium_mine->getButton()->callback(buy_aluminium_cb, this);
+    buy_aluminium_mine->getButton()->tooltip("Цена: 25 M");
 
     buy_magnesium_mine = new Button(196, 603, 200, 50, 20, "Купить шахту");
     buy_magnesium_mine->getButton()->callback(buy_magnesium_cb, this);
+    buy_magnesium_mine->getButton()->tooltip("Цена: 70 M");
 
     buy_oil_pumping = new Button(196, 699, 200, 50, 20, "Купить вышку");
     buy_oil_pumping->getButton()->callback(buy_oil_cb, this);
+    buy_oil_pumping->getButton()->tooltip("Цена: 75 M");
 
     // Текстовые метки
     Text count_of_coal_mines(423, 123, 250, 50, 20, "Количество шахт:");
@@ -244,8 +254,6 @@ MinesWindowEarth::MinesWindowEarth(MainWindow* mainWin) {
 }
 
 MinesWindowEarth::~MinesWindowEarth() {
-    // ТАЙМЕР УБРАН - НИЧЕГО НЕ УДАЛЯЕМ
-    
     // Освобождаем память
     delete buy_coal_mine;
     delete buy_iron_mine;
@@ -282,7 +290,7 @@ void MinesWindowEarth::refreshAll() {
     // Обновляем деньги
     std::string newText = std::to_string(Player.getMoney()) + " M";
     Money_Mines_Earth->copy_label(newText.c_str());
-
+    
     // Обновляем состояние кнопок
     updateButtonsState();
 
@@ -364,19 +372,20 @@ void MinesWindowEarth::updateButtonsState() {
     }
 }
 
-// ФУНКЦИЯ ДЛЯ ТАЙМЕРА - УБИРАЕМ ВОВСЕ
-// void MinesWindowEarth::updateData(void* data) {
-//     // ЭТУ ФУНКЦИЮ УДАЛЯЕМ
-// }
+void MinesWindowEarth::updateData(void* data) {
+    // Функция для таймера - можно использовать для периодического обновления
+    MinesWindowEarth* win = (MinesWindowEarth*)data;
+    if (win->window->visible()) {
+        win->refreshAll();
+    }
+}
 
 void MinesWindowEarth::show() {
     window->show();
-    // НЕ ЗАПУСКАЕМ ТАЙМЕР - обновляем только при действиях
     refreshAll(); // однократное обновление при показе
 }
 
 void MinesWindowEarth::hide() {
-    // НЕ ОСТАНАВЛИВАЕМ ТАЙМЕР - его нет
     window->hide();
 }
 

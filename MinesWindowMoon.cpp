@@ -1,5 +1,6 @@
 #include "MinesWindowMoon.h"
 #include "MainWindow.h" 
+#include "Config.h"
 #include <windows.h>
 #include <mmsystem.h>
 
@@ -62,7 +63,6 @@ void MinesWindowMoon::buy_aluminium_cb(Fl_Widget* w, void* data) {
     }
 }
 
-
 MinesWindowMoon::MinesWindowMoon(MainWindow* mainWin) {
     mainWindow = mainWin;
 
@@ -72,17 +72,19 @@ MinesWindowMoon::MinesWindowMoon(MainWindow* mainWin) {
     buy_aluminium_mine = nullptr;
     buy_nickel_mine = nullptr;
 
-    window = new Fl_Window(1440, 820, "Планеты");
+    window = new Fl_Window(1440, 820, "Шахты Луны");
     window->position(10, 10);
 
+    Config& config = Config::getInstance();
+    
     // ЗАГРУЖАЕМ ИЗОБРАЖЕНИЯ ТОЛЬКО ПРИ ПЕРВОМ СОЗДАНИИ
     if (!static_bg) {
-        static_bg = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/ЛунныйФон.png");
-        static_arrow = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/Cтрелка.png");
-        static_iron_mine = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/ЖелезнаяШахта.png");
-        static_titan_mine = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/ТитановаяШахта.png");
-        static_aluminium_mine = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/АлюминиеваяШахта.png");
-        static_nickel_mine = new Fl_PNG_Image("C:/Users/Zenbook/Desktop/Graphproject/Pictures/НикелеваяШахта.png");
+        static_bg = new Fl_PNG_Image(config.getPicturePath("ЛунныйФон.png").c_str());
+        static_arrow = new Fl_PNG_Image(config.getPicturePath("Cтрелка.png").c_str());
+        static_iron_mine = new Fl_PNG_Image(config.getPicturePath("ЖелезнаяШахта.png").c_str());
+        static_titan_mine = new Fl_PNG_Image(config.getPicturePath("ТитановаяШахта.png").c_str());
+        static_aluminium_mine = new Fl_PNG_Image(config.getPicturePath("АлюминиеваяШахта.png").c_str());
+        static_nickel_mine = new Fl_PNG_Image(config.getPicturePath("НикелеваяШахта.png").c_str());
     }
     bg = static_bg;
     background = new Fl_Box(0, 0, 1440, 820);
@@ -107,15 +109,19 @@ MinesWindowMoon::MinesWindowMoon(MainWindow* mainWin) {
     // СОЗДАЕМ КНОПКИ КАК ЧЛЕНЫ КЛАССА
     buy_nickel_mine = new Button(196, 123, 200, 50, 20, "Купить шахту");
     buy_nickel_mine->getButton()->callback(buy_nickel_cb, this);
+    buy_nickel_mine->getButton()->tooltip("Цена: 125 M");
 
     buy_iron_mine = new Button(196, 219, 200, 50, 20, "Купить шахту");
     buy_iron_mine->getButton()->callback(buy_iron_cb, this);
+    buy_iron_mine->getButton()->tooltip("Цена: 40 M");
 
     buy_titan_mine = new Button(196, 315, 200, 50, 20, "Купить шахту");
     buy_titan_mine->getButton()->callback(buy_titan_cb, this);
+    buy_titan_mine->getButton()->tooltip("Цена: 125 M");
 
     buy_aluminium_mine = new Button(196, 411, 200, 50, 20, "Купить шахту");
     buy_aluminium_mine->getButton()->callback(buy_aluminium_cb, this);
+    buy_aluminium_mine->getButton()->tooltip("Цена: 30 M");
 
     // Текстовые метки
     Text count_of_nickel_mines(423, 123, 250, 50, 20, "Количество шахт:");
@@ -161,8 +167,6 @@ MinesWindowMoon::MinesWindowMoon(MainWindow* mainWin) {
 }
 
 MinesWindowMoon::~MinesWindowMoon() {
-    // ТАЙМЕР УБРАН - НИЧЕГО НЕ УДАЛЯЕМ
-    
     // Освобождаем память
     delete buy_nickel_mine;
     delete buy_iron_mine;
@@ -239,19 +243,12 @@ void MinesWindowMoon::updateButtonsState() {
     }
 }
 
-// ФУНКЦИЯ ДЛЯ ТАЙМЕРА - УБИРАЕМ ВОВСЕ
-// void MinesWindowMoon::updateData(void* data) {
-//     // ЭТУ ФУНКЦИЮ УДАЛЯЕМ
-// }
-
 void MinesWindowMoon::show() {
     window->show();
-    // НЕ ЗАПУСКАЕМ ТАЙМЕР - обновляем только при действиях
     refreshAll(); // однократное обновление при показе
 }
 
 void MinesWindowMoon::hide() {
-    // НЕ ОСТАНАВЛИВАЕМ ТАЙМЕР - его нет
     window->hide();
 }
 
