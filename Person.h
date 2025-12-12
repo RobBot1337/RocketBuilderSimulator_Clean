@@ -12,7 +12,7 @@ private:
     Rocket* playerRocket;
     
 public:
-    Person(Planet* planet, long int cash, Rocket* rocket);
+    Person(Planet* planet, long double cash, Rocket* rocket);
 
     // Сеттеры
     void setMoney(long double newMoney) { money = newMoney; }

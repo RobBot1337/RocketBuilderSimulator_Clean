@@ -13,6 +13,11 @@
 class PlanetsWindow;
 class MinesWindowEarth;
 class MinesWindowMoon;
+class MinesWindowMars;
+class RecourcesMainWindow;
+class ResearchesWindow;
+class CraftsWindow;
+class SaveMenuWindow;  // Добавляем
 
 class MainWindow {
 private:
@@ -25,17 +30,20 @@ private:
     PictureButton* recources_Button;
     PictureButton* researches_Button;
     PictureButton* crafts_Button;
+    PictureButton* saveMenuButton;  // Добавляем кнопку сохранения
+    SaveMenuWindow* saveMenuWin;    // Добавляем указатель на окно сохранения
     
     void updateMinesButton();
 
 public:
     MainWindow();
+    ~MainWindow();  // Добавляем деструктор
     void show();
     void hide();
     void updatePlanetDisplay();
     void updateMoneyDisplay(); 
     
-    // Callback функции - ДЕЛАЕМ СТАТИЧЕСКИМИ
+    // Callback функции
     static void open_planets_cb(Fl_Widget* w, void* data);
     static void open_recources_main_cb(Fl_Widget* w, void* data);
     static void open_researches_cb(Fl_Widget* w, void* data);
@@ -43,6 +51,7 @@ public:
     static void open_mines_earth_cb(Fl_Widget* w, void* data);
     static void open_mines_moon_cb(Fl_Widget* w, void* data);
     static void open_mines_mars_cb(Fl_Widget* w, void* data);
+    static void open_save_menu_cb(Fl_Widget* w, void* data);  // Добавляем callback для сохранения
     
     // Методы открытия окон
     void open_planets_window();
@@ -52,6 +61,7 @@ public:
     void open_mines_window_earth();
     void open_mines_window_moon();
     void open_mines_window_mars();
+    void open_save_menu_window();  // Добавляем метод открытия окна сохранения
 };
 
 #endif

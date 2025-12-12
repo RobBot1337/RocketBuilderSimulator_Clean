@@ -75,7 +75,7 @@ FuelTanksWindow::FuelTanksWindow(ResearchesWindow* mainWin){
     
     unlock_tank1 = new Button(196, 123, 450, 50, 20, "Исследовать топливный бак 1-го уровня");
     unlock_tank1->getButton()->callback(unlock_tank1_cb, this);
-    unlock_tank1->getButton()->tooltip("Цена: 300 M");
+    unlock_tank1->getButton()->tooltip("Цена: 200 M");
     
     // Топливный бак 2
     std::string tank2Path = config.getPicturePath("Топливный2.png");
@@ -83,7 +83,7 @@ FuelTanksWindow::FuelTanksWindow(ResearchesWindow* mainWin){
     
     unlock_tank2 = new Button(196, 219, 450, 50, 20, "Исследовать топливный бак 2-го уровня");
     unlock_tank2->getButton()->callback(unlock_tank2_cb, this);
-    unlock_tank2->getButton()->tooltip("Цена: 600 M\nТребуется: начало колонизации Луны");
+    unlock_tank2->getButton()->tooltip("Цена: 400 M\nТребуется: начало колонизации Луны");
 
     Text money_Title(1129, 330, 250, 50, 20, "Баланс");
     MoneyTank = new Fl_Box(1129, 382, 250, 50, "0 M");
@@ -131,16 +131,16 @@ void FuelTanksWindow::updateButtonsState(){
         unlock_tank1->setColor(FL_BACKGROUND_COLOR);
         unlock_tank1->getButton()->copy_label("Исследовано ✓");
         unlock_tank1->getButton()->tooltip("Топливный бак 1 уже исследован");
-    } else if (Player.getMoney() >= 300) {  // Цена напрямую
+    } else if (Player.getMoney() >= 200) {  // Цена напрямую
         unlock_tank1->activate();
         unlock_tank1->setColor(FL_GREEN);
         unlock_tank1->getButton()->copy_label("Исследовать топливный бак 1-го уровня");
-        unlock_tank1->getButton()->tooltip("Цена: 150 M");
+        unlock_tank1->getButton()->tooltip("Цена: 200 M");
     } else {
         unlock_tank1->deactivate();
         unlock_tank1->setColor(FL_RED);
         unlock_tank1->getButton()->copy_label("Исследовать топливный бак 1-го уровня");
-        unlock_tank1->getButton()->tooltip("Цена: 150 M\nНедостаточно денег");
+        unlock_tank1->getButton()->tooltip("Цена: 200 M\nНедостаточно денег");
     }
 
     // Топливный бак 2
@@ -149,15 +149,15 @@ void FuelTanksWindow::updateButtonsState(){
         unlock_tank2->setColor(FL_BACKGROUND_COLOR);
         unlock_tank2->getButton()->copy_label("Исследовано ✓");
         unlock_tank2->getButton()->tooltip("Топливный бак 2 уже исследован");
-    } else if (Player.getMoney() >= 600 && Moon.getPercentColonization() != 0) {  // Цена напрямую
+    } else if (Player.getMoney() >= 400 && Moon.getPercentColonization() != 0) {  // Цена напрямую
         unlock_tank2->activate();
         unlock_tank2->setColor(FL_GREEN);
         unlock_tank2->getButton()->copy_label("Исследовать топливный бак 2-го уровня");
-        unlock_tank2->getButton()->tooltip("Цена: 300 M\nТребуется: начало колонизации Луны");
+        unlock_tank2->getButton()->tooltip("Цена: 400 M\nТребуется: начало колонизации Луны");
     } else {
         unlock_tank2->deactivate();
         unlock_tank2->setColor(FL_RED);
         unlock_tank2->getButton()->copy_label("Исследовать топливный бак 2-го уровня");
-        unlock_tank2->getButton()->tooltip("Цена: 300 M\nТребуется: начало колонизации Луны\nНедостаточно денег");
+        unlock_tank2->getButton()->tooltip("Цена: 400 M\nТребуется: начало колонизации Луны\nНедостаточно денег");
     }
 }

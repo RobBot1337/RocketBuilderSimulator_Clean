@@ -21,7 +21,7 @@ public:
            short unsigned int protect, 
            short unsigned int profit);
     
-    double getProfit() const { return maxProfit * percentColonization / 100; }
+    double getProfit() const { return maxProfit * percentColonization / 100.0; }
     int getProtection() const { return protection; }
     int getPercentColonization() const { return percentColonization; }
     std::string getPathToSmallPNG() const { return pathSmallPNG; }

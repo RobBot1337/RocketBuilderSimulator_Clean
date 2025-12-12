@@ -3,19 +3,47 @@
 #include "MinesWindowEarth.h"
 #include "MinesWindowMoon.h"
 #include "MinesWindowMars.h"
-#include "RecourcesWindow.h" // ДОБАВЛЯЕМ
+#include "RecourcesWindow.h"
+#include "Config.h"
 #include "Mines.h"
 #include <windows.h>
 #include <mmsystem.h>
 #include <iostream>
 
 // Функция для воспроизведения фоновой музыки
+#include "MainWindow.h"
+#include "PlanetsWindow.h"
+#include "MinesWindowEarth.h"
+#include "MinesWindowMoon.h"
+#include "MinesWindowMars.h"
+#include "RecourcesWindow.h"
+#include "Config.h"
+#include "Mines.h"
+#include <windows.h>
+#include <mmsystem.h>
+#include <iostream>
+#include <fstream>
+
+// Функция для воспроизведения фоновой музыки
 void playBackgroundMusic() {
-    // Флаг SND_ASYNC - воспроизведение в фоне
-    // Флаг SND_LOOP - зацикливание
-    // Флаг SND_FILENAME - воспроизведение из файла
-    PlaySound(TEXT("C:/Users/Zenbook/Desktop/Graphproject/Sounds/Music.wav"), 
-              NULL, SND_ASYNC | SND_LOOP | SND_FILENAME);
+    // Пробуем несколько возможных путей
+    const char* possiblePaths[] = {
+        "Sounds/Music.wav",                    // Рядом с exe
+        "../Sounds/Music.wav",                 // На уровень выше
+        "../../Sounds/Music.wav",              // На 2 уровня выше
+        "Music.wav",                           // Прямо в папке с exe      // В папке Resources
+    };
+    
+    for (const char* path : possiblePaths) {
+        std::ifstream testFile(path);
+        if (testFile.good()) {
+            testFile.close();
+            std::cout << "Играю музыку из: " << path << std::endl;
+            PlaySoundA(path, NULL, SND_ASYNC | SND_LOOP | SND_FILENAME);
+            return;
+        }
+    }
+    
 }
 
 void stopBackgroundMusic() {
